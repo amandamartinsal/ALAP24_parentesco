@@ -5,8 +5,8 @@ XI Congreso de la Asociación Latinoamericana de Población (ALAP); Bogotá, Dic
 **Instructores:**
 
 Amanda Martins de Almeida (MPIDR),
- Liliana P. Calderon-Bernal (MPIDR),
- Ivan Williams (Universidad de Buenos Aires)
- & Diego Alburez-Gutierrez (MPIDR)
+Liliana P. Calderon-Bernal (MPIDR),
+Ivan Williams (Universidad de Buenos Aires)
+& Diego Alburez-Gutierrez (MPIDR)
 
-Visite: 
+Visite: https://amandamartinsal.github.io/ALAP24_parentesco/
