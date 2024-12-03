@@ -37,7 +37,7 @@ Esto ha llevado al desarrollo de sofisticados enfoques metodológicos y conceptu
 
 Algunas cosas útiles que hay que saber:
 
-- Las diapositivas del curso están disponibles aquí: [UPDATE with DIEGO's slides??]
+- Las diapositivas del curso están disponibles aquí: [UPDATE con DIEGO??]
 - Encuentre el código fuente de este sitio web en GitHub: https://github.com/amandamartinsal/ALAP24_parentesco
 
 ![](Picture4.png)
