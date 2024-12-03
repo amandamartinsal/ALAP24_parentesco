@@ -15,7 +15,7 @@ output:
 bibliography: kinship.bib
 ---
 
-```{r 1 setup, include=FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE, 
                       warning = FALSE, 
@@ -37,8 +37,8 @@ Esto ha llevado al desarrollo de sofisticados enfoques metodológicos y conceptu
 
 Algunas cosas útiles que hay que saber:
 
-- Las diapositivas del curso están disponibles aquí: [UPDATE]
-- Encuentre el código fuente de este sitio web en GitHub: [UPDATE]
+- Las diapositivas del curso están disponibles aquí: [UPDATE with DIEGO's slides??]
+- Encuentre el código fuente de este sitio web en GitHub: https://github.com/amandamartinsal/ALAP24_parentesco
 
 ![](Picture4.png)
 
@@ -56,13 +56,24 @@ Pronto comenzaremos las sesiones de laboratorio informático, por lo que sería 
 
 <img src="DemoKin-Logo.png" align="right" width="200" />
 
-#### 1. Instalación
+- [Instalación](#instalacion)
+
+- [Modelo variable en el tiempo: un sexo](#modelo_variablunsexo)
+
+- [Modelo variable en el tiempo: dos sexos](#modelo_variable_dos)
+
+- [Enfoque por periodo](#periodo)
+
+- [Ejercicio](#ejercicio)
+
+
+#### 1. Instalación {#instalacion}
 
 ```{r,warning=F, message=FALSE}
 #Install the development version from GitHub
 
-install.packages("devtools")
-devtools::install_github("IvanWilli/DemoKin")
+#install.packages("devtools")
+#devtools::install_github("IvanWilli/DemoKin")
 ```
 
 ##### 1.1 Cargar otros paquetes que puedan ser útiles:
@@ -76,7 +87,7 @@ library(data.table)
 library(readr)
 ```
 
-#### 2. Modelo variable en el tiempo: un sexo
+#### 2. Modelo variable en el tiempo: un sexo {#modelo_variablunsexo}
 
 Las tasas demográficas cambian cada año, lo que significa que Focal y sus parientes habrán experimentado tasas de mortalidad y fecundidad cambiantes a lo largo del tiempo.
 Empezaremos a construir las estructuras de parentesco en un modelo variable en el tiempo sólo con tasas femeninas: modelo invariante en el tiempo de un sexo.
@@ -114,7 +125,7 @@ col_px_female <- col_female %>%
 
 Los datos que estamos utilizando tienen años en columnas y edades en filas. Aquí, trazamos $q_x$ (complemento de p) sobre la edad y el tiempo:
 
-```{r 41}
+```{r}
 col_px_female %>%
     as.data.frame() %>%
     mutate(age = 1:nrow(col_px_female)-1) %>%
@@ -128,7 +139,7 @@ col_px_female %>%
 
 Tasas de fecundidad por edades:
 
-```{r 42}
+```{r}
 col_asfr %>% as.data.frame() %>%
      mutate(age = 1:nrow(col_asfr)-1) %>%
      pivot_longer(-age, names_to = "year", values_to = "asfr") %>%
@@ -139,7 +150,7 @@ col_asfr %>% as.data.frame() %>%
 
 Y población femenina por edad:
 
-```{r,}
+```{r}
 col_popfemale %>%
      mutate(age = 1:nrow(col_popfemale)-1) %>%
      pivot_longer(-age, names_to = "year", values_to = "pop") %>%
@@ -208,7 +219,7 @@ col_1993$kin_summary %>%
 En el gráfico anterior podemos ver el número de parientes femeninos vivos para la cohorte nacida en 1993.
 Antes de profundizar en la estructura de parentesco de Colombia, añadamos los parientes masculinos.
 
-#### 3. Modelo variable en el tiempo: dos sexos
+#### 3. Modelo variable en el tiempo: dos sexos {#modelo_variable_dos}
 
 En general, los hombres viven menos y se reproducen más tarde que las mujeres. Estos procesos específicos del sexo afectan a la dinámica del parentesco de varias maneras. Por ejemplo, el grado en que un miembro medio de la población, llámese Focal, tiene un abuelo vivo se ve afectado por la mortalidad diferencial que afecta a la generación parental a edades más avanzadas. También nos puede interesar estudiar cómo varían las estructuras de parentesco según el sexo del Focal: un Focal varón puede tener un número diferente de nietos que una Focal mujer, dadas las diferencias de fertilidad según el sexo. Documentar estas diferencias es importante, ya que las mujeres suelen tener mayores expectativas de proporcionar apoyo y cuidados informales a sus familiares. A medida que viven más años, corren un mayor riesgo de no tener parientes vivos.
 La función `kin2sex` implementa un modelo de parentesco de dos sexos.
@@ -330,7 +341,7 @@ col_2sex_1993$kin_summary %>%
 
 La experiencia de pérdida de parentesco para los focales depende de las diferencias de mortalidad entre sexos. Una mujer Focal empieza a perder a sus padres antes que a sus madres. Vemos un patrón ligeramente diferente para los abuelos, ya que la experiencia de Focal de la pérdida de abuelos depende de la disponibilidad inicial de abuelos (es decir, si el abuelo de Focal murió antes de su nacimiento, nunca experimentará su muerte). 
 
-#### 4. Enfoque por periodos
+#### 4. Enfoque por periodos {#periodo}
 
 Hasta ahora hemos utilizado el parámetro `output_cohort`, en esta sección exploraremos el `output_period`.
 Quizás esté interesado en tomar una instantánea de la distribución de parientes en algún año, por ejemplo 2023. Puede hacerlo especificando el argumento `output_period = 2023`.
@@ -371,7 +382,7 @@ col_2sex_2023$kin_summary %>%
 
 Considere el siguiente código, que dará un error ya que estamos pidiendo **tanto** una salida de cohorte como de período al mismo tiempo:
 
-```{r 47, error=TRUE}
+```{r, error=TRUE}
 kin2sex(
   pf = col_px_female,
   pm = col_px_male,
@@ -386,7 +397,7 @@ kin2sex(
   birth_female = .5)
 ```
 
-#### 5. Ejercicio
+#### 5. Ejercicio {#ejercicio}
 
 Elija un país de la carpeta de datos (Argentina, Brasil o México) y responda a las siguientes preguntas:
 
