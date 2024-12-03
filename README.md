@@ -11,4 +11,4 @@ Ivan Williams (Universidad de Buenos Aires)
 
 y Diego Alburez-Gutiérrez (MPIDR)
 
-Para desplegarse, visite: 
+Para desplegarse, visite: https://amandamartinsal.github.io/ALAP24_parentesco/
