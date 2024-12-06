@@ -64,21 +64,32 @@ Pronto comenzaremos las sesiones de laboratorio informático, por lo que sería 
 
 - [Enfoque por periodo](#periodo)
 
+- [¿Qué más?](#quemas)
+
 - [Ejercicio](#ejercicio)
 
 
 #### 1. Instalación {#instalacion}
 
+Instala la versión en desarrollo.
+
 ```{r,warning=F, message=FALSE}
 #Install the development version from GitHub
 
-#install.packages("devtools")
-#devtools::install_github("IvanWilli/DemoKin")
+# install.packages("devtools")
+# devtools::install_github("IvanWilli/DemoKin")
 ```
 
-##### 1.1 Cargar otros paquetes que puedan ser útiles:
+Otros paquetes serán útiles. Encárgate de tenerlos instalados:
 
 ```{r, warning=F, message=FALSE}
+
+# con esto puedes asegurarte de tenerlos todos instalados
+# packages_needed <- c("dplyr", "tidyr", "ggplot2", "data.table", "readr")
+# packages_needed_nothaving <- packages_needed[!packages_needed %in% installed.packages()]
+# for(lib in packages_needed_nothaving) install.packages(lib,dependencies=TRUE)
+
+# actívalos
 library(DemoKin)
 library(dplyr)
 library(tidyr)
@@ -89,12 +100,12 @@ library(readr)
 
 #### 2. Modelo variable en el tiempo: un sexo {#modelo_variablunsexo}
 
-Las tasas demográficas cambian cada año, lo que significa que Focal y sus parientes habrán experimentado tasas de mortalidad y fecundidad cambiantes a lo largo del tiempo.
-Empezaremos a construir las estructuras de parentesco en un modelo variable en el tiempo sólo con tasas femeninas: modelo invariante en el tiempo de un sexo.
+Las tasas demográficas cambian cada año, lo que significa que Ego (o Focal) y sus parientes habrán experimentado tasas de mortalidad y fecundidad cambiantes a lo largo del tiempo.
+Empezaremos a construir las estructuras de parentesco en un modelo variable en el tiempo de un sexo, donde Ego es mujer, por lo que utiloizaremos sólo tasas de población femeninas.
 
-Podemos acceder a las tasas demográficas de cualquier país del mundo, elaboradas por el proyecto World Population Prospects (WPP).
+Podemos acceder a las tasas demográficas de cualquier país del mundo, elaboradas por el proyecto World Population Prospects (WPP) de Naciones Unidas.
 En los ejemplos utilizaremos los datos de fecundidad, mortalidad y población de Colombia desde 1950 hasta 2023.
-En el archivo de datos también encontrará datos de Argentina, Brasil y México.
+En la carpeta de datos también encontrarás datos de Argentina, Brasil y México para el mismo período.
 
 Carguemos primero los datos para las mujeres en Colombia de 1950 a 2023
 
@@ -105,7 +116,30 @@ col_female <- read_csv("data/col_female.csv") #female rates
 col_popfemale <- read_csv("data/col_popfemale.csv") #female population (N)
 ```
 
-Tenemos que remodelar la fecundidad y la mortalidad para crear una matriz que pueda utilizar DemoKin (es decir, crear una matriz con los años como columnas y las edades como filas):
+Aquí, trazamos $q_x$ (complemento de $p_x$) sobre la edad y el tiempo:
+
+```{r}
+col_female %>%
+    mutate(qx = 1-px) %>%
+    ggplot() +
+    geom_line(aes(x = age, y = qx, col = factor(year))) +
+    scale_y_log10() +
+    theme(legend.position = "none")
+```
+
+Tasas de fecundidad por edades:
+
+```{r}
+col_female %>%
+     ggplot() + geom_tile(aes(x = year, y = age, fill = fx)) +
+     scale_x_continuous(breaks = seq(1900,2020,10), labels = seq(1900,2020,10))
+```
+
+Con esta información podemos modelar la estructura de parentesco en dimensiones Edad-Periodo-Cohorte (APC):
+
+![Caswell (2019)](apc.png)
+
+En el caso de la población ya tenemos un formato de matriz que pueda utilizar DemoKin (es decir, crear una matriz con los años como columnas y las edades como filas). Tenemos que hacerlo para la fecundidad y la mortalidad:
 
 ```{r, message=FALSE, warning=FALSE }
 # Reshape fertility
@@ -123,60 +157,27 @@ col_px_female <- col_female %>%
   as.matrix()
 ```
 
-Los datos que estamos utilizando tienen años en columnas y edades en filas. Aquí, trazamos $q_x$ (complemento de p) sobre la edad y el tiempo:
-
-```{r}
-col_px_female %>%
-    as.data.frame() %>%
-    mutate(age = 1:nrow(col_px_female)-1) %>%
-    pivot_longer(-age, names_to = "year", values_to = "px") %>%
-    mutate(qx = 1-px) %>%
-    ggplot() +
-    geom_line(aes(x = age, y = qx, col = year)) +
-    scale_y_log10() +
-    theme(legend.position = "none")
-```
-
-Tasas de fecundidad por edades:
-
-```{r}
-col_asfr %>% as.data.frame() %>%
-     mutate(age = 1:nrow(col_asfr)-1) %>%
-     pivot_longer(-age, names_to = "year", values_to = "asfr") %>%
-     mutate(year = as.integer(year)) %>%
-     ggplot() + geom_tile(aes(x = year, y = age, fill = asfr)) +
-     scale_x_continuous(breaks = seq(1900,2020,10), labels = seq(1900,2020,10))
-```
-
-Y población femenina por edad:
-
-```{r}
-col_popfemale %>%
-     mutate(age = 1:nrow(col_popfemale)-1) %>%
-     pivot_longer(-age, names_to = "year", values_to = "pop") %>%
-     mutate(year = as.integer(year)) %>%
-     ggplot() + geom_tile(aes(x = year, y = age, fill = pop)) +
-     scale_x_continuous(breaks = seq(1900,2020,10), labels = seq(1900,2020,10))
-```
-
-Con esta información podemos modelizar la estructura de parentesco en dimensiones Edad-Periodo-Cohorte (APC):
-
-![](apc.png)
+Ahora sí! Los datos que estamos utilizando tienen años en columnas y edades en filas. 
 
 ##### 2.1 La función `Kin()`
-La función `DemoKin` se puede utilizar para calcular el número y la distribución de edad de los parientes de Focal bajo una serie de supuestos, incluyendo parientes vivos y fallecidos. La función `DemoKin::kin()` realiza actualmente la mayor parte del trabajo pesado en términos de implementación de modelos matriciales de parentesco.
+
+La función `DemoKin` se puede utilizar para calcular el número y la distribución de edad de los parientes de Focal bajo una serie de supuestos, brindando la cantidad de parientes vivos y fallecidos. La función `DemoKin::kin()` realiza actualmente la mayor parte del trabajo en términos de implementación de modelos matriciales de parentesco.
 
 Argumentos en un entorno variable en el tiempo:
 
-1) p numérico. Un vector (atómico) o matriz de probabilidades de supervivencia con filas como edades (y columnas como años en caso de matriz).
-2) f numérico. Igual que p pero para las tasas de fecundidad.
-3) n numeric.Sólo para time_invariant = FALSE. Para la distribución de la población.
-4) time_invariant logical. Suponemos tasas variables en el tiempo, entonces = FALSE.
-5) output_cohort integer. Vector de cohortes de años para devolver los resultados. Debe estar dentro del intervalo de años de los datos de entrada.
-6) output_cohort entero. Igual que output_cohort, pero vector de años del periodo para devolver resultados.
-7) output_kin carácter. tipos de parentesco a devolver: «m» para madre, “d” para hija, ...
+1) *p* numérico. Un vector (atómico) o matriz de probabilidades de sobrevivencia con filas como edades (y columnas como años en caso de matriz).
+2) *f* numérico. Igual que *p* pero para las tasas de fecundidad.
+3) *n* numeric. Sólo para *time_invariant* = `FALSE`. Para la distribución de la población.
+4) *time_invariant* logical. Suponemos tasas variables en el tiempo, entonces será `FALSE`.
+5) *output_cohort* integer. Vector de cohortes de años para devolver los resultados. Debe estar dentro del intervalo de años de los datos de entrada.
+6) *output_cohort* entero. Igual que output_cohort, pero vector de años del periodo para devolver resultados.
+7) *output_kin* carácter. Tipos de parentesco a devolver: `m` para madre, `d` para hija, ... Puedes ver el resto de código en `DemoKin::demokin_codes`, en este casos la columna *Labels_female* será la referencia.
 
-Ejecutamos un modelo de parentesco de un sexo invariante en el tiempo para una cohorte de 1993:
+Pongámosla en acción...
+
+##### 2.2 Enfoque de cohorte
+
+Ahora ejecutemos un modelo dinámico de parentesco de un sexo, obteniendo la cohorte de 1993 (tarda unos segundos):
 
 ```{r, warning=FALSE, message=FALSE}
 col_1993 <-
@@ -187,9 +188,9 @@ col_1993 <-
       output_cohort = 1993)
 ```
 
-##### 2.2 Enfoque de cohortes
+Hechemos un vistazo a la salida: se tiene un elemento `kin_full` con el detalle por edad de Ego, tipo de pariente, edad del pariente, el año, y la cantidad con vida y que murieron en el año. Y luego uno `kin_full` con un resumen de indicadores, agregando por edad de Ego y tipo de pariente.
 
-Utilizamos el argumento `output_cohort = 1993`. La salida de este modelo de parentesco son los parientes vivos que para una mujer media nacida en 1993, dada la fecundidad variable en el tiempo, la mortalidad y la distribución de la población para el periodo 1950-2023. Nótese el argumento `output_cohort = 1993`, utilizado para extraer estimaciones para una cohorte dada de Focales (una diagonal en el diagrama Lexis). Se trata de un subconjunto de todos los resultados posibles (101 clases de edad y 73 años (1950 - 2023)). Las estimaciones se detienen a los 30 años porque sólo hemos proporcionado datos de entrada (de periodo) hasta el año 2023 (`2023 - 19930 = 30`).
+La salida de este modelo de parentesco arroja la cantidad de parientes vivos por edad para una mujer promedio nacida en 1993, en el periodo 1950-2023. Nótese el argumento `output_cohort = 1993`, utilizado para extraer estimaciones para una cohorte dada de Focales (una diagonal en el diagrama Lexis). Se trata de un subconjunto de todos los resultados posibles (101 clases de edad y 73 años (1950 - 2023)). Las estimaciones se detienen a los 30 años porque sólo hemos proporcionado datos de entrada (de periodo) hasta el año 2023 (`2023 - 1993 = 30`).
 
 ##### 2.3 Diagrama de parentesco de Keyfitz
 
@@ -202,9 +203,11 @@ col_1993$kin_summary %>%
   plot_diagram(rounding = 2)
 ```
 
+¿Qupe significa tener 0.94 madres?
+
 ##### 2.4 Parientes vivos
 
-Ahora, visualicemos cómo cambia el número esperado de hijas, hermanos, primos, etc., a lo largo de la vida de Focal.
+Ahora, visualicemos cómo cambia el número esperado de hijas, hermanas, primas, etc., a lo largo de la vida de Focal.
 
 ```{r}
 col_1993$kin_summary %>%
@@ -213,27 +216,30 @@ col_1993$kin_summary %>%
   geom_line(aes(age_focal, count_living))  +
   theme_bw() +
   labs(x = "Age of focal", y= "Number of living female relatives") +
-  facet_wrap(~kin_label)
+  facet_wrap(~kin_label, scales = "free_y")
 ```
 
-En el gráfico anterior podemos ver el número de parientes femeninos vivos para la cohorte nacida en 1993.
+En el gráfico anterior podemos ver el número de parientes mujeres vivos para la cohorte nacida en 1993.
 Antes de profundizar en la estructura de parentesco de Colombia, añadamos los parientes masculinos.
 
 #### 3. Modelo variable en el tiempo: dos sexos {#modelo_variable_dos}
 
-En general, los hombres viven menos y se reproducen más tarde que las mujeres. Estos procesos específicos del sexo afectan a la dinámica del parentesco de varias maneras. Por ejemplo, el grado en que un miembro medio de la población, llámese Focal, tiene un abuelo vivo se ve afectado por la mortalidad diferencial que afecta a la generación parental a edades más avanzadas. También nos puede interesar estudiar cómo varían las estructuras de parentesco según el sexo del Focal: un Focal varón puede tener un número diferente de nietos que una Focal mujer, dadas las diferencias de fertilidad según el sexo. Documentar estas diferencias es importante, ya que las mujeres suelen tener mayores expectativas de proporcionar apoyo y cuidados informales a sus familiares. A medida que viven más años, corren un mayor riesgo de no tener parientes vivos.
-La función `kin2sex` implementa un modelo de parentesco de dos sexos.
+En general, los hombres viven menos y se reproducen más tarde que las mujeres. Estos procesos específicos de cada sexo afectan la dinámica del parentesco de varias maneras. Por ejemplo, las chances que Focal tenga un abuelo vivo se ve afectado por la mortalidad diferencial en edades más avanzadas, diferente al caso de abuelas. 
+También nos puede interesar estudiar cómo varían las estructuras de parentesco según el sexo del Focal: un Focal varón puede tener un número diferente de nietos que una Focal mujer, dadas las diferencias de fecundidad por sexo. 
+Documentar estas diferencias es importante, ya que por ejemplo las tareas familiares de apoyo y cuidados informales a la red familiar no es pareja por sexo en nuestros países. 
 
-Dado que disponemos de la supervivencia y la población masculinas en el proyecto World Population Prospects (WPP), podemos guardar estos datos para utilizarlos en la función `kin2sex`.
+vayamos en ese sentido entonces. La función `kin2sex` implementa un modelo de parentesco de dos sexos. Es similar a la función de un sexo `kin` (ver `?kin`) con dos excepciones. En primer lugar, el usuario necesita especificar la mortalidad y la fecundidad por sexo. En segundo lugar, necesita indicar el sexo de Focal (que se supone femenino por defecto, como en el modelo de un solo sexo). 
+
+Dado que disponemos de la sobrevivencia y la población masculinas en el proyecto World Population Prospects (WPP), podemos contar con estos datos.
 
 ```{r, warning=FALSE, message=FALSE}
 #Load data
 
-col_male <- read_csv("data/col_male.csv") #male rates
-col_popmale <- read_csv("data/col_popmale.csv") #male population (N)
+col_male <- read_csv("data/col_male.csv") # male rates
+col_popmale <- read_csv("data/col_popmale.csv") # male population (N)
 ```
 
-Tenemos que remodelar la mortalidad para crear una matriz que pueda utilizar DemoKin (es decir, crear una matriz con los años como columnas y las edades como filas):
+Tenemos que remodelar la mortalidad para crear una matriz que pueda utilizar `DemoKin` (es decir, crear una matriz con los años como columnas y las edades como filas), tal como hicimos antes:
 
 ```{r, message=FALSE, warning=FALSE}
 # Reshape survival
@@ -245,13 +251,7 @@ col_px_male <- col_male %>%
   as.matrix()
 ```
 
-Sin embargo, ¿para cuántos países se dispone de información sobre la fecundidad masculina?
-
-Dado que no tenemos información sobre la fecundidad masculina a lo largo del tiempo para Colombia, utilizaremos el supuesto andrógino de que los hombres y las mujeres tienen las mismas tasas de fecundidad.
-
-Ahora introducimos la función `kin2sex`, que es similar a la función de un sexo `kin` (ver `?kin`) con dos excepciones. En primer lugar, el usuario necesita especificar la mortalidad y la fecundidad por sexo. En segundo lugar, necesita indicar el sexo de Focal (que se supone femenino por defecto, como en el modelo de un solo sexo).
-
-Vamos a ejecutar un modelo de parentesco de dos sexos variable en el tiempo considerando el supuesto andrógino, hombre y mujer tienen las mismas tasas de fertilidad:
+Sin embargo, ¿para cuántos países se dispone de información sobre la fecundidad masculina? Dado que no tenemos información sobre la fecundidad masculina a lo largo del tiempo para Colombia, utilizaremos el supuesto andrógino de que los hombres y las mujeres tienen las mismas tasas de fecundidad.
 
 ```{r,message=FALSE, warning=FALSE}
 col_2sex_1993 <- kin2sex(
@@ -287,7 +287,7 @@ col_2sex_1993$kin_summary %>%
 
 ##### 3.1 Parientes vivos
 
-Ahora podemos visualizar cómo es el número esperado de parientes vivos según el sexo y la edad del Focal.
+Ahora podemos visualizar cómo es el número esperado de parientes vivos según el sexo y la edad de Focal. ¿Qué podemos ver para esta cohorte? 
 
 ```{r}
   col_2sex_1993$kin_summary %>%
@@ -304,25 +304,25 @@ Ahora podemos visualizar cómo es el número esperado de parientes vivos según 
 
 ##### 3.2 Muerte de parientes
 
-La pérdida de familiares puede tener graves consecuencias para los familiares en duelo, ya que afecta, por ejemplo, a la prestación de apoyo asistencial y a las transferencias intergeneracionales a lo largo de la vida.
-La función `kin` proporciona información sobre el número de familiares perdidos por Focal durante su vida, almacenada en la columna `kin_summary$count_cum_death`. El gráfico siguiente compara los patrones de pérdida de parientes para la cohorte de 1993 (30 años en 2023) por sexo del pariente.
+La pérdida de familiares tiene graves consecuencias para los familiares en duelo, ya que puede afect por ejemplo a la prestación de apoyo asistencial y a las transferencias intergeneracionales a lo largo de la vida.
+El objeto de salida `kin_summary` proporciona información sobre el número de familiares perdidos por Focal durante su vida (acumulado), almacenada en la columna `count_cum_death`. El gráfico siguiente compara los patrones de pérdida acumulada de parientes para la cohorte de 1993 (30 años en 2023) por sexo del pariente.
 
 ```{r,message=FALSE, warning=FALSE, eval=T}
 col_2sex_1993$kin_summary %>%
   rename_kin(sex = "2sex") %>%
-  summarise(count=sum(count_dead), .by = c(kin_label, sex_kin, age_focal)) %>%
+  summarise(count=sum(count_cum_dead), .by = c(kin_label, sex_kin, age_focal)) %>%
   ggplot(aes(age_focal, count, col=sex_kin))+
   geom_line()+
   theme_bw() +
   labs(y = "Expected number of deceased kin by sex and Focal's age",
        x = "Age of Focal",
        col = "Sex of Kin") +
-  facet_wrap(~kin_label)
+  facet_wrap(~kin_label, scales = "free_y")
 ```
 
 ##### 3.3 Proporción de sexos
 
-La información sobre la disponibilidad de parientes por sexo nos permite considerar las proporciones de sexos, una medida tradicional en demografía, con las mujeres a menudo en el denominador. La siguiente figura, por ejemplo, muestra que una mujer colombiana de 30 años en 2023 puede esperar tener 0,5 abuelos por cada abuela. ¿Es siempre cierto que la proporción de sexos disminuirá a la edad de Focal?
+La información sobre la disponibilidad de parientes por sexo nos permite investigar la disponibilidad según sexo a diferentes edades de focal. Una medida tradicional en demografía es el índice de masculinidad, con los hombres en el numerador y las mujeres en el denominador. La siguiente figura, por ejemplo, muestra que una mujer colombiana de 30 años en 2023 puede esperar tener 0.75 abuelos por cada abuela. ¿Es siempre cierto que la proporción de sexos disminuirá a la edad de Focal?
 
 <!-- Bueno, debido a la mortalidad sí (y también los hombres son mayores cuando tienen hijos), pero depende de la proporción de sexos al nacer, podría cambiar si hay alguna preferencia por los varones y la proporción no está equilibrada alrededor de .5 -->
 
@@ -374,11 +374,11 @@ col_2sex_2023$kin_summary %>%
   facet_wrap(~kin_label)
 ```
 
-¿Se parecen estos gráficos de «periodos» a los gráficos de «cohortes» mostrados anteriormente? ¿En qué casos preferiría un enfoque de período a uno de cohorte?
+¿Se parecen estos gráficos de «periodo» a los gráficos de «cohorte» mostrados anteriormente? ¿En qué casos preferiría un enfoque de período a uno de cohorte?
 
 ##### 4.1 A DemoKin no le gustan las combinaciones cohorte-período
 
-> `DemoKin` sólo devolverá valores para periodos O cohortes, pero nunca para combinaciones periodo-cohorte. Esto está relacionado con problemas de tiempo/memoria. 
+> `DemoKin` sólo devolverá valores para periodos ó cohortes, pero nunca para combinaciones periodo-cohorte. Esto está relacionado con problemas de tiempo/memoria en los cálculos. 
 
 Considere el siguiente código, que dará un error ya que estamos pidiendo **tanto** una salida de cohorte como de período al mismo tiempo:
 
@@ -397,11 +397,20 @@ kin2sex(
   birth_female = .5)
 ```
 
-#### 5. Ejercicio {#ejercicio}
+#### 5. ¿Qué mas puedes hacer? {#quemas}
 
-Elija un país de la carpeta de datos (Argentina, Brasil o México) y responda a las siguientes preguntas:
+`DemoKin` tiene implementadas otras extensiones, gracias a la contribución de grandes colaboradores expertos en la temática:
 
-¿Cuál es la relación entre la transición demográfica y la red de parentesco en este país?
-¿Crees que podemos observar indicios de una «transición de parentesco»?
-Utiliza los datos para explorar y apoyar tu respuesta.
+- Análisis por causas de muerte, con la función `kin_time_variant_2sex_cod`.
 
+- Análisis multi-estado, con la función `kin_multi_stage` (y testeando acutlamente una versión dinámica con dos sexos).
+
+Si quieres meterte más en detalle en las funciones y la matemática que hay por detrás, puedes ver este curso: https://ivanwilli.github.io/matrix_kinship_course_lab/index.
+
+#### 6. Ejercicio {#ejercicio}
+
+Elija un país de la carpeta de datos (Argentina, Brasil o México). Utiliza los datos y las implementaciones vistas para explorar una respuesta a las siguiente preguntas (abiertas):
+
+- ¿Cuál es la relación entre la transición demográfica y la red de parentesco en este país?
+
+- ¿Crees que podemos observar indicios de una «transición de parentesco»?
