@@ -975,6 +975,7 @@ col_2sex_2023 <- kin2sex(
   nm = col_popmale,
   time_invariant = FALSE,
   output_period = 2023,
+  output_kin = c("d", "m", "gm", "c", "a", "s"),
   sex_focal = "f",
   birth_female = .5)
 ```
