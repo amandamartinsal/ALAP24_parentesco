@@ -649,8 +649,6 @@ El material reune las contribuciones de los organizadores del taller presentado 
 - Mallika Snyder: https://twitter.com/mallika_snyder
 - Emilio Zagheni: https://twitter.com/ezagheni
 
-#### Referencias
-
 <!-- Sesión de laboratorio 2: Modelos en DemoKin -->
 
 ## DemoKin 
@@ -790,19 +788,34 @@ col_1993 <-
       f = col_asfr,
       n = col_popfemale,
       time_invariant = FALSE,
-      output_cohort = 1993)
+      output_cohort = 1993,
+      output_kin = c("d", "m", "gm", "c", "a", "s"))
 ```
 
 Hechemos un vistazo a la salida: se tiene un elemento `kin_full` con el detalle por edad de Ego, tipo de pariente, edad del pariente, el año, y la cantidad con vida y que murieron en el año. Y luego uno `kin_full` con un resumen de indicadores, agregando por edad de Ego y tipo de pariente.
 
 La salida de este modelo de parentesco arroja la cantidad de parientes vivos por edad para una mujer promedio nacida en 1993, en el periodo 1950-2023. Nótese el argumento `output_cohort = 1993`, utilizado para extraer estimaciones para una cohorte dada de Focales (una diagonal en el diagrama Lexis). Se trata de un subconjunto de todos los resultados posibles (101 clases de edad y 73 años (1950 - 2023)). Las estimaciones se detienen a los 30 años porque sólo hemos proporcionado datos de entrada (de periodo) hasta el año 2023 (`2023 - 1993 = 30`).
 
+Los parientes para el argumento `output_kin` se identifican mediante un código único. Seleccionamos seis parientes para explorar en este workskop: hijas (d), madres (m), abuelas (gm), primas (c), tías (a) y hermanos (s).
+La equivalencia entre los dos conjuntos de códigos figura en la tabla siguiente:
+
+```{r}
+demokin_codes
+```
+
 ##### 2.3 Diagrama de parentesco de Keyfitz
 
-Podemos visualizar los recuentos de parentesco implícitos para una mujer Focal de 30 años en 2023 (nacida en 1993) en una población variable en el tiempo utilizando una red o un diagrama de parentesco de 'Keyfitz' [@Keyfitz2005] con la función `plot_diagram`:
+Podemos visualizar los recuentos de parentesco implícitos para una mujer Focal de 30 años en 2023 (nacida en 1993) en una población variable en el tiempo utilizando una red o un diagrama de parentesco de 'Keyfitz' [@Keyfitz2005] con la función `plot_diagram`, sin especificar los kins que queremos, para poder ver el diagrama completo:
 
 ```{r, fig.height=10, fig.width=12}
-col_1993$kin_summary %>% 
+col_1993_full <-
+  kin(p = col_px_female,
+      f = col_asfr,
+      n = col_popfemale,
+      time_invariant = FALSE,
+      output_cohort = 1993)
+
+col_1993_full$kin_summary %>% 
   filter(age_focal == 30) %>% 
   select(kin, count = count_living) %>% 
   plot_diagram(rounding = 2)
@@ -868,6 +881,7 @@ col_2sex_1993 <- kin2sex(
   nm = col_popmale,
   time_invariant = FALSE,
   output_cohort = 1993,
+  output_kin = c("d", "m", "gm", "c", "a", "s"),
   sex_focal = "f",
   birth_female = .5)
 ```
@@ -1023,3 +1037,5 @@ Elija un país de la carpeta de datos (Argentina, Brasil o México). Utiliza los
 - ¿Cuál es la relación entre la transición demográfica y la red de parentesco en este país?
 
 - ¿Crees que podemos observar indicios de una «transición de parentesco»?
+
+#### Referencias
