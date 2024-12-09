@@ -36,7 +36,7 @@ Esto ha llevado al desarrollo de sofisticados enfoques metodológicos y conceptu
 
 Algunas cosas útiles que hay que saber:
 
-- Las diapositivas del curso están disponibles aquí: []
+- Las diapositivas del curso están disponibles aquí: https://github.com/amandamartinsal/ALAP24_parentesco/tree/master/slides
 - Encuentre el código fuente de este sitio web en GitHub: https://github.com/amandamartinsal/ALAP24_parentesco
 
 ![](Picture4.png)
@@ -47,7 +47,7 @@ Algunas cosas útiles que hay que saber:
 
 NB: Este tutorial incluye las explicaciones y el código que se presentarán oralmente durante la escuela. Puedes consultarlo con antelación, pero no es pre-requisito. 
 
-## Introducción: ¿Qué es SOCSIM y cómo funciona?
+#### Introducción: ¿Qué es SOCSIM y cómo funciona?
 
 SOCSIM se desarrolló originalmente para Unix en UC Berkeley [@hammel_socsim_1976], donde se ha mantenido durante décadas. La versión actual de rsocsim pretende ser independiente del sistema operativo y, en su mayor parte, compatible con la distribución original de SOCSIM. Para más información sobre el SOCSIM original, véase https://lab.demog.berkeley.edu/socsim/ y especialmente @mason2016socsim.
 
@@ -58,19 +58,19 @@ Al final de la simulación, se crean archivos de población que contienen una li
 SOCSIM se ha utilizado ampliamente en la investigación en ciencias sociales para estudiar, entre otras cosas, la dinámica de la disponibilidad de parientes [@hammel_demographic_2005; @wachter_kinship_1997; @verdery_projections_2017], la superposición generacional [@margolis_cohort_2019; @alburezgutierrez_sandwich_2021] y la pérdida de parientes [@zagheni_impact_2011; @verdery_tracking_2020; @snyder_estimates_2022].
 
 
-# 1. Configuración
+#### 1. Configuración
 
 Si quieres instalar `rsocsim` en tu computador, te recomendamos revisar el punto 1 de este tutorial antes de comenzar la escuela. Si tienes alguna pregunta/dificultad, por favor, ponte en contacto con el coordinador del taller (Diego Alburez).
 
 <img src="logo.png" align="right" width="200" />
 
-## 1.1. Instalación
+##### 1.1. Instalación
 
 Instala la versión en desarrollo de `rsocsim` desde GitHub (https://github.com/MPIDR/rsocsim). Es posible que hayamos realizado cambios en el paquete `rsocsim` antes de este taller. Para estar seguro, si ya habías instalado el paquete, desinstálalo y vuelve a instalarlo.
 
 
 ```{r = installsocsim, eval=FALSE}
-# remove.packages("rsocsim")
+remove.packages("rsocsim")
 # install.packages("devtools")
 devtools::install_github("MPIDR/rsocsim")
 ```
@@ -103,7 +103,7 @@ Deberías ver un mensaje largo en la consola, al final del cual aparece el mensa
 Para más información sobre el paquete, el microsimulador SOCSIM, su historia y sus aplicaciones, consulte el sitio web de `rsocsim`: https://mpidr.github.io/rsocsim/.
 
 
-## 1.2. Instala otros paquetes
+##### 1.2. Instala otros paquetes
 Necesitaremos estos otros paquetes para este taller. Si no los tienes aún, por favor, instálalos:
 
 ```{r, warning=FALSE, message=FALSE}
@@ -118,9 +118,9 @@ library(data.table)
 ```
 
 
-# 2. ¿Cómo configurar, correr y verificar una microsimulación en R? 
+#### 2. ¿Cómo configurar, correr y verificar una microsimulación en R? 
 
-### Objetivos
+Objetivos
 
 1. Utilizar datos del World Population Prospects (WPP) 2024 para crear una simulación desde cero
 1. Ejecutar una simulación SOCSIM simple para Colombia
@@ -128,14 +128,14 @@ library(data.table)
 1. Comprobar que las tasas SOCSIM 'de salida' coinciden con las tasas WPP 'de entrada'
 
 
-## 2.1. La simulación: archivos de supervisión y archivos de tasas
+##### 2.1. La simulación: archivos de supervisión y archivos de tasas
 
 Para dar un ejemplo de la utilización de `rsocsim`, realizaremos una microsimulación SOCSIM para Colombia para el periodo 1950-2023. Esta microsimulación utiliza como insumos: tasas específicas de fecundidad por edad simple y año calendario y probabilidades de muerte por edad simple, sexo y año calendario descargadas de las [Perspectivas de la Población Mundial 2024](https://population.un.org/wpp/) (en adelante, WPP 2024, por sus siglas en inglés) .
 
 Para correr la simulación, los datos originales de WPP deben convertirse primero a tasas o probabilidades mensuales en formato SOCSIM, tal y como se describe en SOCSIM Oversimplified [c.f. @mason2016socsim para más detalles]. Las tasas correspondientes a cada año se especifican en el archivo de supervisión `socsim_Colombia.sup`, proporcionado en este repositorio, que se utilizará para ejecutar la simulación. El primer segmento de la simulación se ejecuta durante 100 años (1200 meses) para producir una estructura por edades estable, basada en las tasas y probabilidades de WPP para 1950. Cada uno de los segmentos siguientes se ejecuta durante un año (12 meses) con los archivos de fecundidad y mortalidad correspondientes.
 
 
-## 2.2. Escribir los archivos de tasas de entrada para una simulación SOCSIM para Colombia, 1950-2023
+##### 2.2. Escribir los archivos de tasas de entrada para una simulación SOCSIM para Colombia, 1950-2023
 
 La estructura de los archivos de tasas es esencial para correr SOCSIM. Según SOCSIM Oversimplified [c.f. @mason2016socsim, pp. 26-28], un bloque de tasas es un conjunto completo de tasas especíﬁcas por edad que rigen un evento demográfico para personas de un sexo, grupo y estado civil determinados. En los archivos de tasas, el orden es siempre evento demográfico (birth, death, marriage), grupo (1, ..), sexo (F o M) y estado civil (married, single, divorced, widowed). Para las tasas de fecundidad, puede ir seguido de un número que indique la paridad. Cada línea posterior contiene una tasa o probabilidad mensual y el intervalo de edad sobre el que rige (años y meses del límite superior de edad). El intervalo incluye el límite superior de edad de la línea anterior y termina justo antes del límite superior de edad de la línea actual. Los dos primeros números son los años y meses del límite superior de edad, que se suman; por ejemplo, un límite superior de edad de "1 0" or "0 12" se refiere al primer año de vida [0,1).
 
@@ -146,7 +146,7 @@ Carguemos algunas funciones que hemos preparado para escribir los archivos de ta
 source("functions_rates.R")
 ```
 
-### 2.2.1. Archivos de fecundidad para SOCSIM
+###### 2.2.1. Archivos de fecundidad para SOCSIM
 
 Como datos de entrada de fecundidad, utilizamos todo el rango de edades de la tasas de fecundidad por edad simple de la madre proporcionada por WPP 2024 [15-49]. Los grupos de edad más jóvenes [10-14] y mayores [50-54] sólo se proporcionan en las estimaciones por grupos de edad de 5 años. Adicionalmente, SOCSIM requiere una categoría de edad final con un límite superior correspondiente a la duración máxima de la vida. Aquí, la fijamos a [50-100], para ser coherentes con la estructura de las tablas de mortalidad de WPP.
 
@@ -162,7 +162,7 @@ La siguiente función convierte al formato SOCSIM los datos de fecundidad de WPP
 write_socsim_fertility_rates_WPP(country = "Colombia") 
 ```
 
-### 2.2.2. Archivos de mortalidad para SOCSIM
+###### 2.2.2. Archivos de mortalidad para SOCSIM
 
 Como datos de entrada de mortalidad, SOCSIM requiere probabilidades de muerte (qx) de las tablas de mortalidad de periodo. Utilizamos todo el rango de edades de las tablas de mortalidad por edad simple proporcionadas por WPP 2024 [0-100]. El intervalo final de edad "100" se limita a un año, es decir, [100-101). Originalmente, SOCSIM tenía un límite superior de 100 años, pero en `rsocsim` la edad máxima se ha ampliado a 200 años, en caso de que los datos de mortalidad superen el límite de 100.
 
@@ -179,7 +179,7 @@ La siguiente función convierte al formato SOCSIM los datos de mortalidad de WPP
 write_socsim_mortality_rates_WPP(country = "Colombia")
 ```
 
-## 2.3. Crear los archivos iniciales de población y matrimonios
+##### 2.3. Crear los archivos iniciales de población y matrimonios
 
 Ahora que tenemos los archivos de tasas, vamos a crear los archivos iniciales de población (.opop) y matrimonio (.opop). Por cuestiones prácticas del taller, usaremos una población inicial pequeña para reducir el tiempo de ejecución de la simulación y de cómputo del código posterior. El archivo .opop inicial tendrá un tamaño de 1000, con sexo y fechas de nacimiento asignados aleatoriamente, y grupo 1 para todos. Las demás columnas se completarán durante la simulación. El archivo .omar inicial será un archivo vacío.
 
@@ -218,7 +218,7 @@ write.table(presim.omar, "presim.omar", row.names = F, col.names = F)
 
 ```
 
-## 2.4. Correr una simulación SOCSIM con el paquete `rsocsim`
+##### 2.4. Correr una simulación SOCSIM con el paquete `rsocsim`
 
 Una vez creados los archivos de tasas de entrada y los archivos iniciales de población y matrimonios, podemos ejecutar la simulación. Para utilizar la función `socsim`, debemos especificar la carpeta en la que se encuentran los archivos de supervisión y de tasas, el nombre del archivo de supervisión para las tasas recuperadas del WPP 2024 (1950-2023) y un número de semilla para la simulación.
 
@@ -265,7 +265,7 @@ El archivo de matrimonios (.omar) contiene un registro por cada matrimonio ocurr
 head(omar)
 ```
 
-## 2.5. Estimar las tasas específicas por edad a partir de los resultados de la microsimulación SOCSIM
+##### 2.5. Estimar las tasas específicas por edad a partir de los resultados de la microsimulación SOCSIM
 
 Para comprobar la precisión de nuestra microsimulación para Colombia, podemos estimar y comparar las tasas de entrada y de salida de fecundidad y mortalidad específicas por edad y sexo. Para ello, podemos utilizar las funciones `estimate_fertility_rates()` y `estimate_mortality_rates()` del paquete. Ten en cuenta que estas funciones calculan tasas específicas por edad tanto para la fecundidad como para la mortalidad, ya que utilizan el tamaño de la población a mitad de año por sexo y edad como una estimación de los años-persona vividos durante el año. Por lo tanto, la población del denominador incluye a todos aquellos que nacieron antes del 1 de julio de un año determinado y mueren en julio de ese año o después, o siguen vivos al final de la simulación. Debido al tamaño limitado de la población en una microsimulación (especialmente, de supervivientes a edades avanzadas), a veces pocos o ningún individuo de una edad específica están vivos en un momento determinado (aquí, el 1 de julio). Por ello, con estas funciones es posible obtener tasas superiores a 1, iguales a 0 (0 eventos/población), infinitas (eventos/0 población) y valores NaN (0 eventos/0 población).
 
@@ -327,7 +327,7 @@ bind_rows(asfr_sim %>%
 
 ```
 
-## 2.6. Comparar las tasas específicas por edad SOCSIM vs WPP 2024
+##### 2.6. Comparar las tasas específicas por edad SOCSIM vs WPP 2024
 
 Como verificación adicional, podemos comparar las tasas específicas de fecundidad y mortalidad por edad obtenidas a partir de los resultados de SOCSIM con los datos originales WPP utilizados como entrada para nuestra microsimulación. Dado que nuestras estimaciones de las tasas de fecundidad y mortalidad a partir de los resultados de SOCSIM se agrupan por grupos de edades quinquenales y periodos de 5 años en el ejemplo anterior, debemos estimar primero las tasas agregadas (5x5) a partir de los datos originales de WPP 2024. Para graficar los datos conjuntamente, también necesitamos reorganizarlos.
 
@@ -449,11 +449,11 @@ bind_rows(WPP_fert %>% rename(Estimate = ASFR),
 En términos generales, las tasas de fecundidad y mortalidad por edades quinquenales derivadas de la microsimulación se aproximan a las tasas originales de WPP2024 utilizadas como datos de entrada, lo que nos permite considerar los resultados como suficientemente validos para el analisis. No obstante, es posible observar algunas diferencias entre ambas fuentes que pueden reducirse al incrementar el tamaño de la poblacion inicial. 
 
 
-# 3. ¿Qué se puede hacer con los resultados de la simulación? Ejemplo: estimaciones de pérdida y disponibilidad de parientes
+#### 3. ¿Qué se puede hacer con los resultados de la simulación? Ejemplo: estimaciones de pérdida y disponibilidad de parientes
 
 > Preparado por Mallika Snyder, https://twitter.com/mallika_snyder, para el taller SOCSIM realizado en PAA 2023
 
-### Objetivos
+Objetivos
 
 1. Aprender a analizar los resultados de una simulación SOCSIM
 1. Comprender cómo SOCSIM registra los vínculos familiares
@@ -470,7 +470,7 @@ En investigaciones anteriores, SOCSIM ha sido especialmente apropiado para estud
 Para esto, en nuestro código, utilizaremos una función que ejecutaremos en bucle para cada año de interés. La función tomará un año, buscará los individuos (mujeres) de la edad correspondiente que estén vivos ese año, identificará los años de fallecimiento de sus familiares y, a continuación, calculará la proporción de nuestra muestra que experimentó una pérdida. También calcularemos la proporción de mujeres que tuvieron un familiar vivo el año anterior. El código es una versión simplificada de las funciones utilizadas en un trabajo de investigación anterior [@snyder_estimates_2022]. 
 
 
-### 3.1. Estimar la pérdida de parientes
+##### 3.1. Estimar la pérdida de parientes
 
 Lo primero que necesitamos es una función de ayuda para identificar el año de interés. Esta función está incluida internamente en algunas funciones del paquete `rsocsim`, pero la utilizaremos aquí para convertir nuestras fechas mensuales en anuales.
 
@@ -582,7 +582,7 @@ kinloss_data <- bind_rows(lapply(seq.int(from = 1950, to = 2020, by = 10),
                                                      omar = omar)))
 ```
 
-### 3.2. Examinar nuestras estimaciones
+##### 3.2. Examinar nuestras estimaciones
 
 ```{r}
 # Especificar y ordenar los nombres de los parientes
@@ -630,14 +630,14 @@ kinloss_data %>%
 En efecto, los abuelos y, en menor medida, los padres son los parientes que han mostrado un aumento significativo de su disponibilidad en las últimas décadas. Por el contrario, los hijos, cónyuges y ligeramente los hermanos han mostrado una disminución, probablemente relacionada con la reducción de la fecundidad y la nupcialidad. 
 
 
-# 4. Más información
+#### 4. Más información
 
 El manual 'SOCSIM Oversimplified' escrito por Carl Mason @mason2016socsim es un gran punto de partida para aprender más sobre cómo funciona SOCSIM: https://lab.demog.berkeley.edu/socsim/CurrentDocs/socsimOversimplified.pdf.
 Puedes encontrar más información sobre `rsocsim` en el sitio web del paquete: https://mpidr.github.io/rsocsim/, incluida la documentación de las funciones actualmente disponibles y el trabajo en curso.
 
 Estamos trabajando en la preparación de viñetas ampliadas con ejercicios y ejemplos para utilizar `rsocsim`. Síguenos en X para estar al día. Pónte también en contacto con nosotros si deseas utilizar `rsocsim` para tu trabajo. ¡Queremos saber de tí!
 
-# 5. Agradecimientos
+#### 5. Agradecimientos
 
 Este tutorial es una versión modificada del taller "Demographic microsimulations in R using SOCSIM: Modelling population and kinship dynamics" organizado por el Panel de Demografía Digital y Computacional de la IUSSP y el Instituto Max Planck para la Investigación Demográfica (MPIDR), el 12 de abril de 2023 en Nueva Orleans, Estados Unidos, como parte de la Reunión Anual 2023 de la Asociación Americana de Población (PAA). Para más detalles, véase: https://github.com/alburezg/rsocsim_workshop_paa. 
 
@@ -649,7 +649,7 @@ El material reune las contribuciones de los organizadores del taller presentado 
 - Mallika Snyder: https://twitter.com/mallika_snyder
 - Emilio Zagheni: https://twitter.com/ezagheni
 
-# Referencias
+#### Referencias
 
 <!-- Sesión de laboratorio 2: Modelos en DemoKin -->
 
@@ -1014,7 +1014,11 @@ Si quieres meterte más en detalle en las funciones y la matemática que hay por
 
 #### 6. Ejercicio {#ejercicio}
 
-Elija un país de la carpeta de datos (Argentina, Brasil o México). Utiliza los datos y las implementaciones vistas para explorar una respuesta a las siguiente preguntas (abiertas):
+Elija un país de la carpeta de datos (Argentina, Brasil o México). Utiliza los datos y las implementaciones vistas (1,2) para explorar una respuesta a las siguiente preguntas (abiertas):
+
+1 - Modelo variable en el tiempo: un sexo (enfoque de cohorte o período)
+
+2 - Modelo variable en el tiempo: dos sexos (enfoque de cohorte o período)
 
 - ¿Cuál es la relación entre la transición demográfica y la red de parentesco en este país?
 
