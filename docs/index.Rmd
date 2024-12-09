@@ -26,7 +26,7 @@ options(scipen=999999)
 ```
 
 # {.tabset}
-## Introducion
+## Introducción
 
 #### Descripción del curso: 
 
@@ -39,15 +39,25 @@ Algunas cosas útiles que hay que saber:
 - Las diapositivas del curso están disponibles aquí: https://github.com/amandamartinsal/ALAP24_parentesco/tree/master/slides
 - Encuentre el código fuente de este sitio web en GitHub: https://github.com/amandamartinsal/ALAP24_parentesco
 
+![](agenda.png)
+
 ![](Picture4.png)
 
 <!-- Sesión de laboratorio 1: Simulación con rsocsim -->
 
 ## rsocsim
 
+- [Introducción](#intro)
+
+- [Cómo configurar, correr y verificar una microsimulación en R?](#comocorrer)
+
+- [¿Qué se puede hacer con los resultados de la simulación?](#resultados)
+
+- [Más información](#masinformacion)
+
 NB: Este tutorial incluye las explicaciones y el código que se presentarán oralmente durante la escuela. Puedes consultarlo con antelación, pero no es pre-requisito. 
 
-#### Introducción: ¿Qué es SOCSIM y cómo funciona?
+#### Introducción: ¿Qué es SOCSIM y cómo funciona? {intro}
 
 SOCSIM se desarrolló originalmente para Unix en UC Berkeley [@hammel_socsim_1976], donde se ha mantenido durante décadas. La versión actual de rsocsim pretende ser independiente del sistema operativo y, en su mayor parte, compatible con la distribución original de SOCSIM. Para más información sobre el SOCSIM original, véase https://lab.demog.berkeley.edu/socsim/ y especialmente @mason2016socsim.
 
@@ -70,9 +80,9 @@ Instala la versión en desarrollo de `rsocsim` desde GitHub (https://github.com/
 
 
 ```{r = installsocsim, eval=FALSE}
-remove.packages("rsocsim")
+# remove.packages("rsocsim")
 # install.packages("devtools")
-devtools::install_github("MPIDR/rsocsim")
+remotes::install_github("MPIDR/rsocsim", ref='v1.5.9')
 ```
 
 Veámos si todo funciona correctamente. 
@@ -118,7 +128,7 @@ library(data.table)
 ```
 
 
-#### 2. ¿Cómo configurar, correr y verificar una microsimulación en R? 
+#### 2. ¿Cómo configurar, correr y verificar una microsimulación en R? {comocorrer}
 
 Objetivos
 
@@ -449,7 +459,7 @@ bind_rows(WPP_fert %>% rename(Estimate = ASFR),
 En términos generales, las tasas de fecundidad y mortalidad por edades quinquenales derivadas de la microsimulación se aproximan a las tasas originales de WPP2024 utilizadas como datos de entrada, lo que nos permite considerar los resultados como suficientemente validos para el analisis. No obstante, es posible observar algunas diferencias entre ambas fuentes que pueden reducirse al incrementar el tamaño de la poblacion inicial. 
 
 
-#### 3. ¿Qué se puede hacer con los resultados de la simulación? Ejemplo: estimaciones de pérdida y disponibilidad de parientes
+#### 3. ¿Qué se puede hacer con los resultados de la simulación? Ejemplo: estimaciones de pérdida y disponibilidad de parientes {resultados}
 
 > Preparado por Mallika Snyder, https://twitter.com/mallika_snyder, para el taller SOCSIM realizado en PAA 2023
 
@@ -630,7 +640,7 @@ kinloss_data %>%
 En efecto, los abuelos y, en menor medida, los padres son los parientes que han mostrado un aumento significativo de su disponibilidad en las últimas décadas. Por el contrario, los hijos, cónyuges y ligeramente los hermanos han mostrado una disminución, probablemente relacionada con la reducción de la fecundidad y la nupcialidad. 
 
 
-#### 4. Más información
+#### 4. Más información {masinformacion}
 
 El manual 'SOCSIM Oversimplified' escrito por Carl Mason @mason2016socsim es un gran punto de partida para aprender más sobre cómo funciona SOCSIM: https://lab.demog.berkeley.edu/socsim/CurrentDocs/socsimOversimplified.pdf.
 Puedes encontrar más información sobre `rsocsim` en el sitio web del paquete: https://mpidr.github.io/rsocsim/, incluida la documentación de las funciones actualmente disponibles y el trabajo en curso.
@@ -676,7 +686,7 @@ Pronto comenzaremos las sesiones de laboratorio informático, por lo que sería 
 
 Instala la versión en desarrollo.
 
-```{r,warning=F, message=FALSE}
+```{r,warning=F, message=FALSE, eval=FALSE}
 #Install the development version from GitHub
 
 # install.packages("devtools")
@@ -846,7 +856,7 @@ En general, los hombres viven menos y se reproducen más tarde que las mujeres. 
 También nos puede interesar estudiar cómo varían las estructuras de parentesco según el sexo del Focal: un Focal varón puede tener un número diferente de nietos que una Focal mujer, dadas las diferencias de fecundidad por sexo. 
 Documentar estas diferencias es importante, ya que por ejemplo las tareas familiares de apoyo y cuidados informales a la red familiar no es pareja por sexo en nuestros países. 
 
-vayamos en ese sentido entonces. La función `kin2sex` implementa un modelo de parentesco de dos sexos. Es similar a la función de un sexo `kin` (ver `?kin`) con dos excepciones. En primer lugar, el usuario necesita especificar la mortalidad y la fecundidad por sexo. En segundo lugar, necesita indicar el sexo de Focal (que se supone femenino por defecto, como en el modelo de un solo sexo). 
+Vayamos en ese sentido entonces. La función `kin2sex` implementa un modelo de parentesco de dos sexos. Es similar a la función de un sexo `kin` (ver `?kin`) con dos excepciones. En primer lugar, el usuario necesita especificar la mortalidad y la fecundidad por sexo. En segundo lugar, necesita indicar el sexo de Focal (que se supone femenino por defecto, como en el modelo de un solo sexo). 
 
 Dado que disponemos de la sobrevivencia y la población masculinas en el proyecto World Population Prospects (WPP), podemos contar con estos datos.
 
@@ -918,7 +928,7 @@ Ahora podemos visualizar cómo es el número esperado de parientes vivos según 
   labs(y = "Expected number of living kin by sex and Focal's age",
        x = "Age of Focal",
        fill = "Sex of Kin") +
-  facet_wrap(~kin_label)
+  facet_wrap(~kin_label, scales = "free_y")
 ```
 
 ##### 3.2 Muerte de parientes
@@ -960,7 +970,7 @@ col_2sex_1993$kin_summary %>%
 
 La experiencia de pérdida de parentesco para los focales depende de las diferencias de mortalidad entre sexos. Una mujer Focal empieza a perder a sus padres antes que a sus madres. Vemos un patrón ligeramente diferente para los abuelos, ya que la experiencia de Focal de la pérdida de abuelos depende de la disponibilidad inicial de abuelos (es decir, si el abuelo de Focal murió antes de su nacimiento, nunca experimentará su muerte). 
 
-#### 4. Enfoque por periodos {#periodo}
+#### 4. Enfoque por períodos {#periodo}
 
 Hasta ahora hemos utilizado el parámetro `output_cohort`, en esta sección exploraremos el `output_period`.
 Quizás esté interesado en tomar una instantánea de la distribución de parientes en algún año, por ejemplo 2023. Puede hacerlo especificando el argumento `output_period = 2023`.
@@ -991,7 +1001,7 @@ col_2sex_2023$kin_summary %>%
   labs(y = "Expected number of living kin by sex and Focal's age",
        x = "Age of Focal",
        col = "Sex of Kin") +
-  facet_wrap(~kin_label)
+  facet_wrap(~kin_label, scales = "free_y")
 ```
 
 ¿Se parecen estos gráficos de «periodo» a los gráficos de «cohorte» mostrados anteriormente? ¿En qué casos preferiría un enfoque de período a uno de cohorte?
@@ -1031,12 +1041,14 @@ Si quieres meterte más en detalle en las funciones y la matemática que hay por
 
 Elija un país de la carpeta de datos (Argentina, Brasil o México). Utiliza los datos y las implementaciones vistas (1,2) para explorar una respuesta a las siguiente preguntas (abiertas):
 
-1 - Modelo variable en el tiempo: un sexo (enfoque de cohorte o período)
-
-2 - Modelo variable en el tiempo: dos sexos (enfoque de cohorte o período)
-
 - ¿Cuál es la relación entre la transición demográfica y la red de parentesco en este país?
 
 - ¿Crees que podemos observar indicios de una «transición de parentesco»?
+
+Recordemos que las implementaciones vistas son:
+
+1 - Modelo variable en el tiempo: un sexo (enfoque de cohorte o período)
+
+2 - Modelo variable en el tiempo: dos sexos (enfoque de cohorte o período)
 
 #### Referencias
