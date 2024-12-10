@@ -788,7 +788,7 @@ col_px_female <- col_female %>%
 
 Ahora sí! Los datos que estamos utilizando tienen años en columnas y edades en filas. 
 
-##### 2.1 La función `Kin()`
+##### 2.1 La función `kin()`
 
 La función `DemoKin` se puede utilizar para calcular el número y la distribución de edad de los parientes de Focal bajo una serie de supuestos, brindando la cantidad de parientes vivos y fallecidos. La función `DemoKin::kin()` realiza actualmente la mayor parte del trabajo en términos de implementación de modelos matriciales de parentesco.
 
@@ -799,7 +799,7 @@ Argumentos en un entorno variable en el tiempo:
 3) *n* numeric. Sólo para *time_invariant* = `FALSE`. Para la distribución de la población.
 4) *time_invariant* logical. Suponemos tasas variables en el tiempo, entonces será `FALSE`.
 5) *output_cohort* integer. Vector de cohortes de años para devolver los resultados. Debe estar dentro del intervalo de años de los datos de entrada.
-6) *output_cohort* entero. Igual que output_cohort, pero vector de años del periodo para devolver resultados.
+6) *output_period* entero. Igual que output_cohort, pero vector de años del periodo para devolver resultados.
 7) *output_kin* carácter. Tipos de parentesco a devolver: `m` para madre, `d` para hija, ... Puedes ver el resto de código en `DemoKin::demokin_codes`, en este casos la columna *Labels_female* será la referencia.
 
 Pongámosla en acción...
@@ -818,7 +818,7 @@ col_1993 <-
       output_kin = c("d", "m", "gm", "c", "a", "s"))
 ```
 
-Hechemos un vistazo a la salida: se tiene un elemento `kin_full` con el detalle por edad de Ego, tipo de pariente, edad del pariente, el año, y la cantidad con vida y que murieron en el año. Y luego uno `kin_full` con un resumen de indicadores, agregando por edad de Ego y tipo de pariente.
+Echemos un vistazo a la salida: se tiene un elemento `kin_full` con el detalle por edad de Ego, tipo de pariente, edad del pariente, el año, y la cantidad con vida y que murieron en el año. Y luego uno `kin_full` con un resumen de indicadores, agregando por edad de Ego y tipo de pariente.
 
 La salida de este modelo de parentesco arroja la cantidad de parientes vivos por edad para una mujer promedio nacida en 1993, en el periodo 1950-2023. Nótese el argumento `output_cohort = 1993`, utilizado para extraer estimaciones para una cohorte dada de Focales (una diagonal en el diagrama Lexis). Se trata de un subconjunto de todos los resultados posibles (101 clases de edad y 73 años (1950 - 2023)). Las estimaciones se detienen a los 30 años porque sólo hemos proporcionado datos de entrada (de periodo) hasta el año 2023 (`2023 - 1993 = 30`).
 
