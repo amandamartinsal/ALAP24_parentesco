@@ -26,6 +26,20 @@ options(scipen=999999)
 ```
 
 # {.tabset}
+
+## Preparación
+
+Instale los siguientes paquetes en R antes de iniciar con el laboratorio:
+
+```{r = installs, eval=FALSE}
+install.packages("tidyverse")
+install.packages("data.table")
+install.packages("ggh4x")
+install.packages("devtools")
+devtools::install_github("MPIDR/rsocsim", ref = "v1.5.9")
+devtools::install_github("IvanWilli/DemoKin")
+```
+
 ## Introducción
 
 #### Descripción del curso: 
@@ -1051,7 +1065,6 @@ Recordemos que las implementaciones vistas son:
 
 2 - Modelo variable en el tiempo: dos sexos (enfoque de cohorte o período)
 
-#### Referencias
 
 <!-- Sesión de laboratorio 3: Descargar datos de otros países -->
 
@@ -1065,6 +1078,12 @@ Descargaremos los datos de fecundidad, mortalidad y población de todos los paí
 
 En primer lugar, cargaremos la función `download_wpp24()`, que automatiza el proceso de descarga de estos datos. Tenga en cuenta que este proceso puede tardar un par de minutos.
 
+Otros paquetes serán útiles.
+
+```{r}
+library(readr)
+library(dplyr)
+```
 
 ```{r,}
 # Load the function to download data
@@ -1111,27 +1130,18 @@ fertility_colombia <-
              output_file = "fertility_colombia_example")
 ```
 
-```{r, eval=FALSE}
+```{r,}
 ## Example output for DemoKin using female rates
-# Select country, year and sex to obtain px,qx or mx
+# Select country, year and sex to obtain px and fx
 
-mortality_argentina <-
+argentina <-
   UNWPP_data(country = "Argentina", 
              start_year = 2023, 
              end_year = 2023,
              sex = "Female",
-             indicators = c("px"), #indicators of interest
+             indicators = c("px","fx"), #indicators of interest
              output_format = "csv", #format you want to save (csv or rdata)
-             output_file = "mortality_argentina")
-
-fertility_argentina <-
-  UNWPP_data(country = "Argentina", 
-             start_year = 2023, 
-             end_year = 2023,
-             sex = "Female",
-             indicators = c("fx"), #indicators of interest
-             output_format = "csv", #format you want to save (csv or rdata)
-             output_file = "fertility_argentina") 
+             output_file = "argentina") 
 
 ```
 
@@ -1139,7 +1149,7 @@ fertility_argentina <-
 ## Example output for Demokin - population (N)
 # Select country, year and sex to obtain N 
 
-pop_colombia <-
+pop_argentina <-
   UNWPP_pop(country = "Argentina", 
             start_year = 2023, 
             end_year = 2023, 
@@ -1151,17 +1161,18 @@ Aquí un ejemplo de cómo hacerlo:
 
 ```{r}
 # Reshape fertility
-arg_asfr <- fertility_argentina %>%
+arg_asfr <- argentina %>%
   select(age, year, fx) %>%
   pivot_wider(names_from = year, values_from = fx) %>%
   select(-age) %>%
   as.matrix()
 
 # Reshape survival
-arg_px_female <- mortality_argentina %>%
-  select(age, year, px) %>%
-  pivot_wider(names_from = year, values_from = px) %>%
+arg_px_female <- argentina %>%
+  select(age, year, px.x) %>%
+  pivot_wider(names_from = year, values_from = px.x) %>%
   select(-age) %>%
   as.matrix()
 ```
 
+#### Referencias

@@ -1,5 +1,10 @@
 # Function to load and filter UN World Population Prospects data for mortality (px,qx,mx) and fertility (fx)
 
+library(readr)
+library(dplyr)
+library(tidyr)
+
+
 UNWPP_data <- function(country, start_year, end_year, sex = c("Female", "Male"), 
                        indicators = c("px", "qx", "mx", "fx"), output_format = c("csv", "RData"), 
                        output_file = "UNWPP_output") {
