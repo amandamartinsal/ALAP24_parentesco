@@ -673,6 +673,8 @@ El material reune las contribuciones de los organizadores del taller presentado 
 - Mallika Snyder: https://twitter.com/mallika_snyder
 - Emilio Zagheni: https://twitter.com/ezagheni
 
+#### Referencias
+
 <!-- Sesión de laboratorio 2: Modelos en DemoKin -->
 
 ## DemoKin 
