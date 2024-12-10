@@ -1052,3 +1052,116 @@ Recordemos que las implementaciones vistas son:
 2 - Modelo variable en el tiempo: dos sexos (enfoque de cohorte o período)
 
 #### Referencias
+
+<!-- Sesión de laboratorio 3: Descargar datos de otros países -->
+
+## Descargar datos de otros países 
+
+¿Qué podemos hacer si queremos trabajar con otros países?
+
+Mostraremos cómo seleccionar diferentes países y años, para aplicar lo aprendido en la sección rsocim y DemoKin.
+
+Descargaremos los datos de fecundidad, mortalidad y población de todos los países desde 1950 hasta 2023.
+
+En primer lugar, cargaremos la función `download_wpp24()`, que automatiza el proceso de descarga de estos datos. Tenga en cuenta que este proceso puede tardar un par de minutos.
+
+
+```{r,}
+# Load the function to download data
+source("UNWPP_download.R")
+
+# Download the data
+download_wpp24()
+```
+
+Una vez descargados los datos, podemos filtrar la información que nos interesa, por ejemplo, el país de interés. Para ello, cargaremos dos funciones:
+
+- `UNWPP_data`: Esta función filtra los datos de mortalidad (px, qx, mx) y fecundidad (fx) por el país de interés y el periodo de tiempo correspondiente.
+
+- `UNWPP_pop`: Esta función filtra los datos del tamaño de la población (N).
+
+Para elegir el país de interés, puede consultar el nombre del país [aquí](https://unstats.un.org/unsd/methodology/m49/).
+
+```{r,}
+# Load function to filter data
+source("UNWPP_data.R")
+```
+
+
+```{r,}
+## Example output for rsocsim
+# Select country, year and sex to obtain px,qx or mx
+
+mortality_colombia <-
+  UNWPP_data(country = "Colombia", 
+             start_year = 2023, 
+             end_year = 2023,   
+             indicators = c("px", "qx", "mx"), #indicators of interest
+             output_format = "RData", #format you want to save (csv or Rdata)
+             output_file = "mortality_colombia_example") 
+
+# Select country, year and sex to obtain fx
+
+fertility_colombia <-
+  UNWPP_data(country = "Colombia", 
+             start_year = 2023, 
+             end_year = 2023, 
+             indicators = "fx",
+             output_format = "RData", 
+             output_file = "fertility_colombia_example")
+```
+
+```{r, eval=FALSE}
+## Example output for DemoKin using female rates
+# Select country, year and sex to obtain px,qx or mx
+
+mortality_argentina <-
+  UNWPP_data(country = "Argentina", 
+             start_year = 2023, 
+             end_year = 2023,
+             sex = "Female",
+             indicators = c("px"), #indicators of interest
+             output_format = "csv", #format you want to save (csv or rdata)
+             output_file = "mortality_argentina")
+
+fertility_argentina <-
+  UNWPP_data(country = "Argentina", 
+             start_year = 2023, 
+             end_year = 2023,
+             sex = "Female",
+             indicators = c("fx"), #indicators of interest
+             output_format = "csv", #format you want to save (csv or rdata)
+             output_file = "fertility_argentina") 
+
+```
+
+```{r, eval=FALSE}
+## Example output for Demokin - population (N)
+# Select country, year and sex to obtain N 
+
+pop_colombia <-
+  UNWPP_pop(country = "Argentina", 
+            start_year = 2023, 
+            end_year = 2023, 
+            sex = "Female") 
+```
+
+Recuerde que para DemoKin necesitamos remodelar la mortalidad y la fecundidad para ejecutar los modelos.
+Aquí un ejemplo de cómo hacerlo:
+
+```{r}
+# Reshape fertility
+arg_asfr <- fertility_argentina %>%
+  select(age, year, fx) %>%
+  pivot_wider(names_from = year, values_from = fx) %>%
+  select(-age) %>%
+  as.matrix()
+
+# Reshape survival
+arg_px_female <- mortality_argentina %>%
+  select(age, year, px) %>%
+  pivot_wider(names_from = year, values_from = px) %>%
+  select(-age) %>%
+  as.matrix()
+```
+

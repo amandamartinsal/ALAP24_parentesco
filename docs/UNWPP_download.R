@@ -30,7 +30,7 @@ download_wpp24 <-
     url_male_lifetable <- "https://population.un.org/wpp/Download/Files/1_Indicator%20(Standard)/CSV_FILES/WPP2024_Life_Table_Complete_Medium_Male_1950-2023.csv.gz" 
     url_pop <- "https://population.un.org/wpp/Download/Files/1_Indicator%20(Standard)/CSV_FILES/WPP2024_Population1JanuaryBySingleAgeSex_Medium_1950-2023.csv.gz"
     
-  
+    
     # Read and save as CSV files if not already saved
     if (!file.exists("data/WPP2024_Fertility_by_Age1.csv")) {
       print("Reading Fertility")
@@ -70,7 +70,7 @@ download_wpp24 <-
     
     # Return a message indicating the process is complete
     return("2024 World Population Prospects data downloaded and saved successfully as CSV files.")
-}
+  }
 
 
-#download_wpp24()
+download_wpp24()
