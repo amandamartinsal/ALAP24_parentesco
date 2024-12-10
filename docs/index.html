@@ -512,14 +512,14 @@ la simulación?</a></p></li>
 <p>NB: Este tutorial incluye las explicaciones y el código que se
 presentarán oralmente durante la escuela. Puedes consultarlo con
 antelación, pero no es pre-requisito.</p>
-<div id="introducción-qué-es-socsim-y-cómo-funciona-intro" class="section level4">
-<h4>Introducción: ¿Qué es SOCSIM y cómo funciona? {intro}</h4>
+<div id="intro" class="section level4">
+<h4>Introducción: ¿Qué es SOCSIM y cómo funciona?</h4>
 <p>SOCSIM se desarrolló originalmente para Unix en UC Berkeley <span class="citation">(E. Hammel et al. 1976)</span>, donde se ha mantenido
 durante décadas. La versión actual de rsocsim pretende ser independiente
 del sistema operativo y, en su mayor parte, compatible con la
 distribución original de SOCSIM. Para más información sobre el SOCSIM
 original, véase <a href="https://lab.demog.berkeley.edu/socsim/" class="uri">https://lab.demog.berkeley.edu/socsim/</a> y especialmente
-<span class="citation">Mason (2016)</span>.</p>
+<span class="citation">(<strong>mason2016socsim?</strong>)</span>.</p>
 <p>La siguiente descripción de SOCSIM se ha adaptado de los materiales
 complementarios de <span class="citation">Alburez‐Gutierrez, Mason, and
 Zagheni (2021)</span>. SOCSIM es un programa de microsimulación
@@ -552,16 +552,16 @@ la población. En estos archivos, cada individuo es una observación en un
 archivo de datos rectangular con que registra las características
 demográficas del individuo y los números de identificación de las
 principales relaciones de parentesco. SOCSIM modela poblaciones
-«cerradas», es decir, os individuos sólo pueden entrar y salir de la
+«cerradas», es decir, los individuos sólo pueden entrar y salir de la
 simulación por nacimiento y muerte (simulados).</p>
 <p>SOCSIM se ha utilizado ampliamente en la investigación en ciencias
 sociales para estudiar, entre otras cosas, la dinámica de la
 disponibilidad de parientes <span class="citation">(E. A. Hammel 2005;
-Kennethl W. Wachter 1997; Verdery and Margolis 2017)</span>, la
+Wachter 1997; Ashton M. Verdery and Margolis 2017)</span>, la
 superposición generacional <span class="citation">(Margolis and Verdery
 2019; Alburez‐Gutierrez, Mason, and Zagheni 2021)</span> y la pérdida de
-parientes <span class="citation">(Zagheni 2011; Verdery et al. 2020;
-Snyder et al. 2022)</span>.</p>
+parientes <span class="citation">(Zagheni 2011; Ashton M. Verdery et al.
+2020; Snyder et al. 2022)</span>.</p>
 </div>
 <div id="configuración" class="section level4">
 <h4>1. Configuración</h4>
@@ -602,7 +602,7 @@ código sin centrarnos en los detalles técnicos:</p>
 <span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co"># Inicia la simulación:</span></span>
 <span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>rsocsim<span class="sc">::</span><span class="fu">socsim</span>(folder, supfile, seed)</span></code></pre></div>
 <pre><code>## [1] &quot;Start run1simulationwithfile&quot;
-## [1] &quot;C:/Users/martins/socsim/socsim_sim_6854&quot;
+## [1] &quot;C:/Users/martins/socsim/socsim_sim_1013&quot;
 ## [1] &quot;300&quot;
 ## Start socsim
 ## start socsim main. MAXUYEARS: 200; MAXUMONTHS: 2400
@@ -639,18 +639,18 @@ código sin centrarnos en los detalles técnicos:</p>
 ## Starting month is 601
 ## Initial size of pop 8000  (living: 8000)
 ## ------------aa3s------------aa32New events generated for all living persons
-## ------------b1month:  700 PopLive:  9414 Brths:  16 Dths:   0 Mrgs: 11 Dvs:  0 Mq: 3728 Fq:0 ti1: 0.3 ti2: 0.005000 0.3598
-## month:  800 PopLive: 10926 Brths:  12 Dths:   1 Mrgs:  6 Dvs:  0 Mq: 3890 Fq:0 ti1: 0.4 ti2: 0.006000 0.3965
-## month:  900 PopLive: 12260 Brths:  14 Dths:   0 Mrgs:  4 Dvs:  0 Mq: 4031 Fq:0 ti1: 0.5 ti2: 0.005000 0.3077
-## month: 1000 PopLive: 13397 Brths:   9 Dths:   2 Mrgs:  4 Dvs:  0 Mq: 4134 Fq:0 ti1: 0.6 ti2: 0.005000 0.2926
-## month: 1100 PopLive: 14172 Brths:  16 Dths:   6 Mrgs:  6 Dvs:  0 Mq: 4135 Fq:0 ti1: 0.7 ti2: 0.006000 0.3509
-## month: 1200 PopLive: 14518 Brths:  13 Dths:  11 Mrgs:  6 Dvs:  0 Mq: 4000 Fq:0 ti1: 0.8 ti2: 0.005000 0.3125
-## month: 1300 PopLive: 14323 Brths:  14 Dths:  20 Mrgs:  4 Dvs:  0 Mq: 3891 Fq:0 ti1: 1.0 ti2: 0.006000 0.3963
-## month: 1400 PopLive: 13816 Brths:  13 Dths:  15 Mrgs:  4 Dvs:  0 Mq: 3746 Fq:0 ti1: 1.1 ti2: 0.005000 0.3563
-## month: 1500 PopLive: 13330 Brths:  11 Dths:  11 Mrgs:  5 Dvs:  0 Mq: 3679 Fq:0 ti1: 1.2 ti2: 0.007000 0.5172
-## month: 1600 PopLive: 12944 Brths:  10 Dths:  15 Mrgs:  4 Dvs:  0 Mq: 3593 Fq:0 ti1: 1.3 ti2: 0.006000 0.4648
-## month: 1700 PopLive: 12525 Brths:  10 Dths:  20 Mrgs:  5 Dvs:  0 Mq: 3436 Fq:0 ti1: 1.4 ti2: 0.005000 0.4235
-## month: 1800 PopLive: 12009 Brths:  10 Dths:  16 Mrgs:  7 Dvs:  0 Mq: 3275 Fq:0 ti1: 1.5 ti2: 0.007000 0.6526
+## ------------b1month:  700 PopLive:  9414 Brths:  16 Dths:   0 Mrgs: 11 Dvs:  0 Mq: 3728 Fq:0 ti1: 0.2 ti2: 0.003000 0.2159
+## month:  800 PopLive: 10926 Brths:  12 Dths:   1 Mrgs:  6 Dvs:  0 Mq: 3890 Fq:0 ti1: 0.3 ti2: 0.005000 0.3304
+## month:  900 PopLive: 12260 Brths:  14 Dths:   0 Mrgs:  4 Dvs:  0 Mq: 4031 Fq:0 ti1: 0.3 ti2: 0.003000 0.1846
+## month: 1000 PopLive: 13397 Brths:   9 Dths:   2 Mrgs:  4 Dvs:  0 Mq: 4134 Fq:0 ti1: 0.4 ti2: 0.004000 0.2341
+## month: 1100 PopLive: 14172 Brths:  16 Dths:   6 Mrgs:  6 Dvs:  0 Mq: 4135 Fq:0 ti1: 0.5 ti2: 0.005000 0.2924
+## month: 1200 PopLive: 14518 Brths:  13 Dths:  11 Mrgs:  6 Dvs:  0 Mq: 4000 Fq:0 ti1: 0.6 ti2: 0.003000 0.1875
+## month: 1300 PopLive: 14323 Brths:  14 Dths:  20 Mrgs:  4 Dvs:  0 Mq: 3891 Fq:0 ti1: 0.7 ti2: 0.006000 0.3963
+## month: 1400 PopLive: 13816 Brths:  13 Dths:  15 Mrgs:  4 Dvs:  0 Mq: 3746 Fq:0 ti1: 0.8 ti2: 0.004000 0.2851
+## month: 1500 PopLive: 13330 Brths:  11 Dths:  11 Mrgs:  5 Dvs:  0 Mq: 3679 Fq:0 ti1: 0.9 ti2: 0.004000 0.2955
+## month: 1600 PopLive: 12944 Brths:  10 Dths:  15 Mrgs:  4 Dvs:  0 Mq: 3593 Fq:0 ti1: 1.0 ti2: 0.004000 0.3098
+## month: 1700 PopLive: 12525 Brths:  10 Dths:  20 Mrgs:  5 Dvs:  0 Mq: 3436 Fq:0 ti1: 1.0 ti2: 0.004000 0.3388
+## month: 1800 PopLive: 12009 Brths:  10 Dths:  16 Mrgs:  7 Dvs:  0 Mq: 3275 Fq:0 ti1: 1.1 ti2: 0.005000 0.4662
 ## 
 ## 
 ## Socsim Main Done
@@ -679,9 +679,9 @@ aún, por favor, instálalos:</p>
 <span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="fu">library</span>(data.table)</span></code></pre></div>
 </div>
 </div>
-<div id="cómo-configurar-correr-y-verificar-una-microsimulación-en-r-comocorrer" class="section level4">
-<h4>2. ¿Cómo configurar, correr y verificar una microsimulación en R?
-{comocorrer}</h4>
+<div id="comocorrer" class="section level4">
+<h4>2. ¿Cómo configurar, correr y verificar una microsimulación en
+R?</h4>
 <p>Objetivos</p>
 <ol style="list-style-type: decimal">
 <li>Utilizar datos del World Population Prospects (WPP) 2024 para crear
@@ -702,35 +702,35 @@ muerte por edad simple, sexo y año calendario descargadas de las <a href="https
 Mundial 2024</a> (en adelante, WPP 2024, por sus siglas en inglés) .</p>
 <p>Para correr la simulación, los datos originales de WPP deben
 convertirse primero a tasas o probabilidades mensuales en formato
-SOCSIM, tal y como se describe en SOCSIM Oversimplified <span class="citation">(c.f. Mason 2016 para más detalles)</span>. Las tasas
-correspondientes a cada año se especifican en el archivo de supervisión
-<code>socsim_Colombia.sup</code>, proporcionado en este repositorio, que
-se utilizará para ejecutar la simulación. El primer segmento de la
-simulación se ejecuta durante 100 años (1200 meses) para producir una
-estructura por edades estable, basada en las tasas y probabilidades de
-WPP para 1950. Cada uno de los segmentos siguientes se ejecuta durante
-un año (12 meses) con los archivos de fecundidad y mortalidad
-correspondientes.</p>
+SOCSIM, tal y como se describe en SOCSIM Oversimplified <span class="citation">(c.f. <strong>mason2016socsim?</strong> para más
+detalles)</span>. Las tasas correspondientes a cada año se especifican
+en el archivo de supervisión <code>socsim_Colombia.sup</code>,
+proporcionado en este repositorio, que se utilizará para ejecutar la
+simulación. El primer segmento de la simulación se ejecuta durante 100
+años (1200 meses) para producir una estructura por edades estable,
+basada en las tasas y probabilidades de WPP para 1950. Cada uno de los
+segmentos siguientes se ejecuta durante un año (12 meses) con los
+archivos de fecundidad y mortalidad correspondientes.</p>
 </div>
 <div id="escribir-los-archivos-de-tasas-de-entrada-para-una-simulación-socsim-para-colombia-1950-2023" class="section level5">
 <h5>2.2. Escribir los archivos de tasas de entrada para una simulación
 SOCSIM para Colombia, 1950-2023</h5>
 <p>La estructura de los archivos de tasas es esencial para correr
-SOCSIM. Según SOCSIM Oversimplified <span class="citation">(c.f. Mason
-2016, 26–28)</span>, un bloque de tasas es un conjunto completo de tasas
-especíﬁcas por edad que rigen un evento demográfico para personas de un
-sexo, grupo y estado civil determinados. En los archivos de tasas, el
-orden es siempre evento demográfico (birth, death, marriage), grupo (1,
-..), sexo (F o M) y estado civil (married, single, divorced, widowed).
-Para las tasas de fecundidad, puede ir seguido de un número que indique
-la paridad. Cada línea posterior contiene una tasa o probabilidad
-mensual y el intervalo de edad sobre el que rige (años y meses del
-límite superior de edad). El intervalo incluye el límite superior de
-edad de la línea anterior y termina justo antes del límite superior de
-edad de la línea actual. Los dos primeros números son los años y meses
-del límite superior de edad, que se suman; por ejemplo, un límite
-superior de edad de “1 0” or “0 12” se refiere al primer año de vida
-[0,1).</p>
+SOCSIM. Según SOCSIM Oversimplified <span class="citation">(c.f.
+<strong>mason2016socsim?</strong>)</span>, un bloque de tasas es un
+conjunto completo de tasas especíﬁcas por edad que rigen un evento
+demográfico para personas de un sexo, grupo y estado civil determinados.
+En los archivos de tasas, el orden es siempre evento demográfico (birth,
+death, marriage), grupo (1, ..), sexo (F o M) y estado civil (married,
+single, divorced, widowed). Para las tasas de fecundidad, puede ir
+seguido de un número que indique la paridad. Cada línea posterior
+contiene una tasa o probabilidad mensual y el intervalo de edad sobre el
+que rige (años y meses del límite superior de edad). El intervalo
+incluye el límite superior de edad de la línea anterior y termina justo
+antes del límite superior de edad de la línea actual. Los dos primeros
+números son los años y meses del límite superior de edad, que se suman;
+por ejemplo, un límite superior de edad de “1 0” or “0 12” se refiere al
+primer año de vida [0,1).</p>
 <p>Carguemos algunas funciones que hemos preparado para escribir los
 archivos de tasas SOCSIM a partir de los datos de WPP 2024.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Cargar funciones para escribir archivos de tasas SOCSIM</span></span>
@@ -790,11 +790,11 @@ superen el límite de 100.</p>
 <p>Para convertir las probabilidades de muerte anuales de WPP en
 probabilidades mensuales “SOCSIM”, suponemos que la probabilidad de
 morir es constante a lo largo del año y utilizamos la fórmula <span class="math inline">\(1-(1-_nq_x)^{1/n}\)</span> propuesta por Kenneth
-Watcher <span class="citation">(Kenneth W. Wachter 2014, 53)</span>.
-Para el intervalo final de edad 100, las probabilidades mensuales son
-iguales a 1/12. Las probabilidades de muerte son idénticas para todos
-los estados civiles de cada sexo. Sin embargo, para este ejercicio sólo
-se especifican para mujeres solteras y hombres solteros (single) en los
+Watcher <span class="citation">(<strong>wachter2014essential?</strong>)</span>. Para
+el intervalo final de edad 100, las probabilidades mensuales son iguales
+a 1/12. Las probabilidades de muerte son idénticas para todos los
+estados civiles de cada sexo. Sin embargo, para este ejercicio sólo se
+especifican para mujeres solteras y hombres solteros (single) en los
 archivos de tasas. Los demás estados civiles seguirán las reglas
 predeterminadas para las tasas en SOCSIM.</p>
 <p>Los métodos utilizados para estimar la mortalidad y las tablas de
@@ -1151,9 +1151,9 @@ ambas fuentes que pueden reducirse al incrementar el tamaño de la
 poblacion inicial.</p>
 </div>
 </div>
-<div id="qué-se-puede-hacer-con-los-resultados-de-la-simulación-ejemplo-estimaciones-de-pérdida-y-disponibilidad-de-parientes-resultados" class="section level4">
+<div id="resultados" class="section level4">
 <h4>3. ¿Qué se puede hacer con los resultados de la simulación? Ejemplo:
-estimaciones de pérdida y disponibilidad de parientes {resultados}</h4>
+estimaciones de pérdida y disponibilidad de parientes</h4>
 <blockquote>
 <p>Preparado por Mallika Snyder, <a href="https://twitter.com/mallika_snyder" class="uri">https://twitter.com/mallika_snyder</a>, para el taller
 SOCSIM realizado en PAA 2023</p>
@@ -1201,13 +1201,13 @@ muchas más formas posibles de utilizar SOCSIM para estudiar éstas y
 otras cuestiones sobre las dinámicas de parentesco.</p>
 <p>En investigaciones anteriores, SOCSIM ha sido especialmente apropiado
 para estudiar la pérdida de parientes con relación al cambio en la
-mortalidad <span class="citation">(Zagheni 2011; Verdery et al. 2020;
-Snyder et al. 2022)</span>. Aquí nos centraremos en un ejemplo sencillo:
-los cambios en la tasa de experimentar la pérdida de un familiar a lo
-largo del tiempo. Utilizaremos como grupo de referencia a las mujeres de
-entre 25 y 39 años que están vivas en un año determinado. Así, la
-muestra cambiará cada año. El denominador incluye a todas las mujeres,
-no sólo a las que tienen un familiar vivo.</p>
+mortalidad <span class="citation">(Zagheni 2011; Ashton M. Verdery et
+al. 2020; Snyder et al. 2022)</span>. Aquí nos centraremos en un ejemplo
+sencillo: los cambios en la tasa de experimentar la pérdida de un
+familiar a lo largo del tiempo. Utilizaremos como grupo de referencia a
+las mujeres de entre 25 y 39 años que están vivas en un año determinado.
+Así, la muestra cambiará cada año. El denominador incluye a todas las
+mujeres, no sólo a las que tienen un familiar vivo.</p>
 <p>Para esto, en nuestro código, utilizaremos una función que
 ejecutaremos en bucle para cada año de interés. La función tomará un
 año, buscará los individuos (mujeres) de la edad correspondiente que
@@ -1376,10 +1376,10 @@ ligeramente los hermanos han mostrado una disminución, probablemente
 relacionada con la reducción de la fecundidad y la nupcialidad.</p>
 </div>
 </div>
-<div id="más-información-masinformacion" class="section level4">
-<h4>4. Más información {masinformacion}</h4>
-<p>El manual ‘SOCSIM Oversimplified’ escrito por Carl Mason <span class="citation">Mason (2016)</span> es un gran punto de partida para
-aprender más sobre cómo funciona SOCSIM: <a href="https://lab.demog.berkeley.edu/socsim/CurrentDocs/socsimOversimplified.pdf" class="uri">https://lab.demog.berkeley.edu/socsim/CurrentDocs/socsimOversimplified.pdf</a>.
+<div id="masinformacion" class="section level4">
+<h4>4. Más información</h4>
+<p>El manual ‘SOCSIM Oversimplified’ escrito por Carl Mason <span class="citation">(<strong>mason2016socsim?</strong>)</span> es un gran
+punto de partida para aprender más sobre cómo funciona SOCSIM: <a href="https://lab.demog.berkeley.edu/socsim/CurrentDocs/socsimOversimplified.pdf" class="uri">https://lab.demog.berkeley.edu/socsim/CurrentDocs/socsimOversimplified.pdf</a>.
 Puedes encontrar más información sobre <code>rsocsim</code> en el sitio
 web del paquete: <a href="https://mpidr.github.io/rsocsim/" class="uri">https://mpidr.github.io/rsocsim/</a>, incluida la
 documentación de las funciones actualmente disponibles y el trabajo en
@@ -1619,8 +1619,8 @@ códigos figura en la tabla siguiente:</p>
 <p>Podemos visualizar los recuentos de parentesco implícitos para una
 mujer Focal de 30 años en 2023 (nacida en 1993) en una población
 variable en el tiempo utilizando una red o un diagrama de parentesco de
-‘Keyfitz’ <span class="citation">(Keyfitz and Caswell 2005)</span> con
-la función <code>plot_diagram</code>, sin especificar los kins que
+‘Keyfitz’ <span class="citation">(<strong>Keyfitz2005?</strong>)</span>
+con la función <code>plot_diagram</code>, sin especificar los kins que
 queremos, para poder ver el diagrama completo:</p>
 <div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a>col_1993_full <span class="ot">&lt;-</span></span>
 <span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a>  <span class="fu">kin</span>(<span class="at">p =</span> col_px_female,</span>
@@ -2019,10 +2019,6 @@ Hammel, E., D Hutchinson, K Wachter, R Lundy, and R Deuel. 1976. <em>The
 <span>International</span> <span>Studies</span>. University of
 California Berkeley.
 </div>
-<div id="ref-Keyfitz2005" class="csl-entry">
-Keyfitz, Nathan, and Hal Caswell. 2005. <em>Applied Mathematical
-Demography</em>. New York: Springer.
-</div>
 <div id="ref-margolis_cohort_2019" class="csl-entry">
 Margolis, Rachel, and Ashton M. Verdery. 2019. <span>“A
 <span>Cohort</span> <span>Perspective</span> on the
@@ -2032,10 +2028,6 @@ Margolis, Rachel, and Ashton M. Verdery. 2019. <span>“A
 <span>Disparities</span> in the <span>United</span>
 <span>States</span>.”</span> <em>Demography</em> 56 (4): 1495–1518. <a href="https://doi.org/10.1007/s13524-019-00795-1">https://doi.org/10.1007/s13524-019-00795-1</a>.
 </div>
-<div id="ref-mason2016socsim" class="csl-entry">
-Mason, Carl. 2016. <span>“Socsim Oversimplified. Berkeley: Demography
-Lab, University of California.”</span>
-</div>
 <div id="ref-snyder_estimates_2022" class="csl-entry">
 Snyder, Mallika, Diego Alburez-Gutierrez, Iván Williams, and Emilio
 Zagheni. 2022. <span>“Estimates from 31 Countries Show the Significant
@@ -2044,11 +2036,12 @@ Family Bereavement.”</span> <em>Proceedings of the National Academy of
 Sciences</em> 119 (26): e2202686119. <a href="https://doi.org/10.1073/pnas.2202686119">https://doi.org/10.1073/pnas.2202686119</a>.
 </div>
 <div id="ref-verdery_projections_2017" class="csl-entry">
-Verdery, Ashton M., and Rachel Margolis. 2017. <span>“Projections of
-White and Black Older Adults Without Living Kin in the
+Verdery, Ashton M, and Rachel Margolis. 2017. <span>“Projections of
+<span>White</span> and <span>Black</span> <span>Older</span>
+<span>Adults</span> Without <span>Living</span> <span>Kin</span> in the
 <span>United</span> <span>States</span>, 2015 to 2060.”</span>
 <em>Proceedings of the National Academy of Sciences</em> 114 (42):
-11109–14. <a href="https://doi.org/10.1073/pnas.1710341114">https://doi.org/10.1073/pnas.1710341114</a>.
+11109–14.
 </div>
 <div id="ref-verdery_tracking_2020" class="csl-entry">
 Verdery, Ashton M., Emily Smith-Greenaway, Rachel Margolis, and Jonathan
@@ -2056,10 +2049,6 @@ Daw. 2020. <span>“Tracking the Reach of <span>COVID</span>-19 Kin Loss
 with a Bereavement Multiplier Applied to the <span>United</span>
 <span>States</span>.”</span> <em>Proceedings of the National Academy of
 Sciences</em> 117 (30): 17695. <a href="https://doi.org/10.1073/pnas.2007476117">https://doi.org/10.1073/pnas.2007476117</a>.
-</div>
-<div id="ref-wachter2014essential" class="csl-entry">
-Wachter, Kenneth W. 2014. <em>Essential Demographic Methods</em>.
-Harvard University Press.
 </div>
 <div id="ref-wachter_kinship_1997" class="csl-entry">
 Wachter, Kennethl W. 1997. <span>“Kinship Resources for the
